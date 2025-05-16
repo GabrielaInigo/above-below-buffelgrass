@@ -1,0 +1,76 @@
+﻿SampleID,Buffel,Vegetation,Induced,Site,sampleid,SiteInvasion,Cover,CoverGeneral
+IPV1,1,Palo Verde,1,I,ipv1,Induced,PaloVerde_withBuffel,PaloVerde
+IPV2,1,Palo Verde,1,I,ipv2,Induced,PaloVerde_withBuffel,PaloVerde
+IPV3,1,Palo Verde,1,I,ipv3,Induced,PaloVerde_withBuffel,PaloVerde
+IPV4,1,Palo Verde,1,I,ipv4,Induced,PaloVerde_withBuffel,PaloVerde
+IPV5,1,Palo Verde,1,I,ipv5,Induced,PaloVerde_withBuffel,PaloVerde
+IPF1,1,Ironwood,1,I,ipf1,Induced,IronWood_withBuffel,IronWood
+IPF2,1,Ironwood,1,I,ipf2,Induced,IronWood_withBuffel,IronWood
+IPF3,1,Ironwood,1,I,ipf3,Induced,IronWood_withBuffel,IronWood
+IPF4,1,Ironwood,1,I,ipf4,Induced,IronWood_withBuffel,IronWood
+IPF5,1,Ironwood,1,I,ipf5,Induced,IronWood_withBuffel,IronWood
+IM1,1,Mesquite,1,I,im1,Induced,Mesquite_withBuffel,Mesquite
+IM2,1,Mesquite,1,I,im2,Induced,Mesquite_withBuffel,Mesquite
+IM3,1,Mesquite,1,I,im3,Induced,Mesquite_withBuffel,Mesquite
+IM4,1,Mesquite,1,I,im4,Induced,Mesquite_withBuffel,Mesquite
+IM5,1,Mesquite,1,I,im5,Induced,Mesquite_withBuffel,Mesquite
+IOB1,1,Open Buffel,1,I,iob1,Induced,Open_withBuffel,Open
+IOB2,1,Open Buffel,1,I,iob2,Induced,Open_withBuffel,Open
+IOB3,1,Open Buffel,1,I,iob3,Induced,Open_withBuffel,Open
+IOB4,1,Open Buffel,1,I,iob4,Induced,Open_withBuffel,Open
+IOB5,1,Open Buffel,1,I,iob5,Induced,Open_withBuffel,Open
+ION1,1,Open Native,1,I,ion1,Induced,Open_withNatives,Open
+ION2,1,Open Native,1,I,ion2,Induced,Open_withNatives,Open
+ION3,1,Open Native,1,I,ion3,Induced,Open_withNatives,Open
+ION4,1,Open Native,1,I,ion4,Induced,Open_withNatives,Open
+ION5,1,Open Native,1,I,ion5,Induced,Open_withNatives,Open
+IOD1,1,Open Bare,1,I,iod1,Induced,Open_Bare,Open
+IOD2,1,Open Bare,1,I,iod2,Induced,Open_Bare,Open
+IOD3,1,Open Bare,1,I,iod3,Induced,Open_Bare,Open
+IOD4,1,Open Bare,1,I,iod4,Induced,Open_Bare,Open
+IOD5,1,Open Bare,1,I,iod5,Induced,Open_Bare,Open
+NPV1,0,Palo Verde,0,N,npv1,Natural,PaloVerde_noBuffel,PaloVerde
+NPV2,0,Palo Verde,0,N,npv2,Natural,PaloVerde_noBuffel,PaloVerde
+NPV3,0,Palo Verde,0,N,npv3,Natural,PaloVerde_noBuffel,PaloVerde
+NPV4,0,Palo Verde,0,N,npv4,Natural,PaloVerde_noBuffel,PaloVerde
+NPV5,0,Palo Verde,0,N,npv5,Natural,PaloVerde_noBuffel,PaloVerde
+NPF1,0,Ironwood,0,N,npf1,Natural,IronWood_noBuffel,IronWood
+NPF2,0,Ironwood,0,N,npf2,Natural,IronWood_noBuffel,IronWood
+NPF3,0,Ironwood,0,N,npf3,Natural,IronWood_noBuffel,IronWood
+NPF4,0,Ironwood,0,N,npf4,Natural,IronWood_noBuffel,IronWood
+NPF5,0,Ironwood,0,N,npf5,Natural,IronWood_noBuffel,IronWood
+NM1,0,Mesquite,0,N,nm1,Natural,Mesquite_noBuffel,Mesquite
+NM2,0,Mesquite,0,N,nm2,Natural,Mesquite_noBuffel,Mesquite
+NM3,0,Mesquite,0,N,nm3,Natural,Mesquite_noBuffel,Mesquite
+NM4,0,Mesquite,0,N,nm4,Natural,Mesquite_noBuffel,Mesquite
+NM5,0,Mesquite,0,N,nm5,Natural,Mesquite_noBuffel,Mesquite
+NON1,0,Open Native,0,N,non1,Natural,Open_withNatives,Open
+NON2,0,Open Native,0,N,non2,Natural,Open_withNatives,Open
+NON3,0,Open Native,0,N,non3,Natural,Open_withNatives,Open
+NON4,0,Open Native,0,N,non4,Natural,Open_withNatives,Open
+NON5,0,Open Native,0,N,non5,Natural,Open_withNatives,Open
+NOD1,0,Open Bare,0,N,nod1,Natural,Open_Bare,Open
+NOD2,0,Open Bare,0,N,nod2,Natural,Open_Bare,Open
+NOD3,0,Open Bare,0,N,nod3,Natural,Open_Bare,Open
+NOD4,0,Open Bare,0,N,nod4,Natural,Open_Bare,Open
+NOD5,0,Open Bare,0,N,nod5,Natural,Open_Bare,Open
+CPV1,1,Palo Verde,0,C,cpv1,Natural,PaloVerde_withBuffel,PaloVerde
+CPV2,1,Palo Verde,0,C,cpv2,Natural,PaloVerde_withBuffel,PaloVerde
+CPV3,1,Palo Verde,0,C,cpv3,Natural,PaloVerde_withBuffel,PaloVerde
+CPV4,1,Palo Verde,0,C,cpv4,Natural,PaloVerde_withBuffel,PaloVerde
+CPV5,1,Palo Verde,0,C,cpv5,Natural,PaloVerde_withBuffel,PaloVerde
+CPF1,1,Ironwood,0,C,cpf1,Natural,IronWood_withBuffel,IronWood
+CPF2,1,Ironwood,0,C,cpf2,Natural,IronWood_withBuffel,IronWood
+CPF3,1,Ironwood,0,C,cpf3,Natural,IronWood_withBuffel,IronWood
+CPF4,1,Ironwood,0,C,cpf4,Natural,IronWood_withBuffel,IronWood
+CPF5,1,Ironwood,0,C,cpf5,Natural,IronWood_withBuffel,IronWood
+CM1,1,Mesquite,0,C,cm1,Natural,Mesquite_withBuffel,Mesquite
+CM2,1,Mesquite,0,C,cm2,Natural,Mesquite_withBuffel,Mesquite
+CM3,1,Mesquite,0,C,cm3,Natural,Mesquite_withBuffel,Mesquite
+CM4,1,Mesquite,0,C,cm4,Natural,Mesquite_withBuffel,Mesquite
+CM5,1,Mesquite,0,C,cm5,Natural,Mesquite_withBuffel,Mesquite
+COB1,1,Open Buffel,0,C,cob1,Natural,Open_withBuffel,Open
+COB2,1,Open Buffel,0,C,cob2,Natural,Open_withBuffel,Open
+COB3,1,Open Buffel,0,C,cob3,Natural,Open_withBuffel,Open
+COB4,1,Open Buffel,0,C,cob4,Natural,Open_withBuffel,Open
+COB5,1,Open Buffel,0,C,cob5,Natural,Open_withBuffel,Open
