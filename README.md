@@ -1,6 +1,6 @@
-# Above and Belowground Effects of Buffelgrass in the Sonoran Desert
+# Above and belowground effects of buffelgrass invasion in the Sonoran Desert
 
-This repository contains the analysis scripts and data for the research project "Above and Belowground Effects of Buffelgrass in the Sonoran Desert" developed for the masters thesis of Gabriela Inigo at the University of Arizona.
+This repository contains the analysis scripts and data for the research project "Above and belowground effects of buffelgrass invasion in the Sonoran Desert" developed for the master's thesis of Gabriela Inigo at the University of Arizona.
 
 ## Project Overview
 
