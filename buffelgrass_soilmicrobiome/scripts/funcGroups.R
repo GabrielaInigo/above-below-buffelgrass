@@ -3,7 +3,7 @@
 # Date: May 2023
 
 
-setwd("/Users/gabrielainigo/Documents/GitHub/")
+setwd("/Users/gabrielainigo/Documents/GitHub/above-below-buffelgrass")
 
 bac_asv <- read.csv("buffelgrass_soilmicrobiome/data/16S/asv_table_16S.csv", header = T)
 bac_tax <- read.csv("buffelgrass_soilmicrobiome/data/16S/taxa_table_16S.csv", header = T)

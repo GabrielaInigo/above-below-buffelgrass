@@ -3,12 +3,12 @@
 # Date: December 2023
 
 # set working directory
-setwd("/Users/gabrielainigo/Documents/GitHub/")
+setwd("/Users/gabrielainigo/Documents/GitHub/above-below-buffelgrass")
 
 # LOAD DATA
 
 # load vegetation data
-veg <- read.csv("/Users/gabrielainigo/Documents/GitHub/buffelgrass_vegetation/VegAbundanceTable.csv", row.names = 1)
+veg <- read.csv("/Users/gabrielainigo/Documents/GitHub/above-below-buffelgrass/buffelgrass_vegetation/VegAbundanceTable.csv", row.names = 1)
 
 # remove first and second column of veg
 veg <- veg[,c(-1,-2)]

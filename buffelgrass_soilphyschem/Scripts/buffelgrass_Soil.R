@@ -4,7 +4,7 @@
 
 
 # set working directory
-setwd("/Users/gabrielainigo/Documents/GitHub/")
+setwd("/Users/gabrielainigo/Documents/GitHub/above-below-buffelgrass")
 
 
 # LOAD DATA
