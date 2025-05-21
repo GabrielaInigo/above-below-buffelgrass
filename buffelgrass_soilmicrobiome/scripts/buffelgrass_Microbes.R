@@ -4,7 +4,7 @@
 
 
 # set working directory
-setwd("/Users/gabrielainigo/Documents/GitHub/")
+setwd("/Users/gabrielainigo/Documents/GitHub/above-below-buffelgrass")
 
 
 # LOAD DATA
@@ -108,17 +108,13 @@ summary(rowSums(fil_b_asv)) # min = 40286
 fil_b_asv_ab <- fil_b_asv
 
 # convert abundance to presence absence
-fil_b_asv_ab[fil_b_asv_ab > 0] <- 1
+# fil_b_asv_ab[fil_b_asv_ab > 0] <- 1
 
 # calculate the mean of the total number of phylotypes in the samples
-mean(rowSums(fil_b_asv_ab)) # mean = 1664.473
-
-
-range(rowSums(fil_b_asv_ab)) # range = 612 - 2574
-
-summary(rowSums(fil_b_asv_ab)) # min = 612
-
-sd(rowSums(fil_b_asv_ab)) # sd = 490.5789
+# mean(rowSums(fil_b_asv_ab)) # mean = 1664.473
+# range(rowSums(fil_b_asv_ab)) # range = 612 - 2574
+# summary(rowSums(fil_b_asv_ab)) # min = 612
+# sd(rowSums(fil_b_asv_ab)) # sd = 490.5789
 
 # ITS
 
@@ -146,13 +142,13 @@ summary(rowSums(fil_f_asv))# min 27640
 fil_f_asv_ab <- fil_f_asv
 
 # convert abundance to presence absence
-fil_f_asv_ab[fil_f_asv_ab > 0] <- 1
+# fil_f_asv_ab[fil_f_asv_ab > 0] <- 1
 
 # calculate the mean of the total number of phylotypes in samples
-mean(rowSums(fil_f_asv_ab))
-range(rowSums(fil_f_asv_ab))
-summary(rowSums(fil_f_asv_ab))
-sd(rowSums(fil_f_asv_ab))
+# mean(rowSums(fil_f_asv_ab)) # mean = 267.1892
+# range(rowSums(fil_f_asv_ab)) # range = 38 - 438
+# summary(rowSums(fil_f_asv_ab)) # min = 38
+# sd(rowSums(fil_f_asv_ab)) # sd = 100.0539
 
 
 # TAXONOMY
@@ -168,13 +164,13 @@ BiocManager::install("phyloseq", force = TRUE)
 library(phyloseq)
 
 # first we need to create a phyloseq objects of our data
-# fungal abundance table
+# bacterial abundance table
 count_tab_phy_b <- otu_table(as.matrix(fil_b_asv_ab), taxa_are_rows=F)
 
-# fungal taxa table
+# bacterial taxa table
 tax_tab_phy_b <- tax_table(as.matrix(fil_b_taxa))
 
-# fungal metadat table
+# bacterial metadata table
 sample_info_tab_phy_b <- sample_data(b_metadata)
 
 b_ASV_physeq <- phyloseq(count_tab_phy_b, tax_tab_phy_b, sample_info_tab_phy_b)
@@ -201,6 +197,41 @@ b_proportions <- apply(b.dat.agr.sorted, 1, function(x){as.numeric(x)*100/sum(ro
 sum(rowSums(b.dat.agr.sorted[2])) # 9778504
 
 sum(b_proportions[2,]) # Must be 100%
+
+# Taxonomic omposition barplot
+
+# create phyloseq object
+otu_b <- otu_table(as.matrix(fil_b_asv), taxa_are_rows = FALSE)
+tax_b <- tax_table(as.matrix(fil_b_taxa))
+sample_b <- sample_data(b_metadata)
+b_physeq <- phyloseq(otu_b, tax_b, sample_b)
+
+# agglomerate taxa
+b_physeq_phylum <- tax_glom(b_physeq, taxrank = "Phylum")
+
+# transform to relative abundance
+b_physeq_phylum_rel <- transform_sample_counts(b_physeq_phylum, function(x) x / sum(x))
+
+# plot taxonomic composition per sample
+library(ggplot2)
+plot_bar(b_physeq_phylum_rel, fill = "Phylum") +
+  ylab("Relative Abundance") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# create a dataframe 
+df_bac <- psmelt(b_physeq_phylum_rel)
+
+# group less abundant phyla into a group called 'Others' (top 10)
+top_n <- 6
+phylum_sums <- df_bac %>% group_by(Phylum) %>% summarise(total = sum(Abundance)) %>% arrange(desc(total))
+top_phyla <- phylum_sums$Phylum[1:top_n]
+df_bac$Phylum_grouped <- ifelse(df_bac$Phylum %in% top_phyla, as.character(df_bac$Phylum), 'Others')
+
+# Recalcular abundancia agrupada
+df_bac_grouped <- df_bac %>% group_by(Sample, get(group_var), Phylum_grouped) %>% summarise(Abundance = sum(Abundance))
+colnames(df_bac_grouped)[2] <- group_var
+
 
 # ITS
 
@@ -252,6 +283,8 @@ summary(b_metadata$Richness.16S.rar) # min = 608, max = 2,450
 # rarefy diversity data to remove small outliers
 b_metadata$Shannon.16S.rar <- diversity(rrarefy(fil_b_asv, sample=40000), index = "shannon")
 
+# diversity data without rarefaction
+b_metadata$Shannon.16S <- diversity(fil_b_asv)
 
 # ITS
 
@@ -265,7 +298,8 @@ summary(f_metadata$Richness.ITS.rar) # min = 38, max = 404
 # rarify diversity data to remove small outliers
 f_metadata$Shannon.ITS.rar <- diversity(rrarefy(fil_f_asv, sample=20000), index = "shannon")
 
-
+# diversity data without rarefaction
+f_metadata$Shannon.ITS <- diversity(fil_f_asv)
 
 # RICHNESS PLOTS
 
@@ -326,6 +360,9 @@ write.csv(estimates, file = "/Users/gabrielainigo/Documents/GitHub/bac-richness-
           row.names = F)
 
 # bacterial diversity plot
+library(ggplot2) #for ggplot function
+install.packages("ggh4x")
+library(ggh4x) #for nested facet
 ggplot(b_metadata, aes(x=Cover, y=Shannon.16S.rar, color=Cover))+
   geom_jitter(alpha=0.6, position=position_jitterdodge(jitter.width = 0.2))+
   geom_pointrange(size=1, position=position_jitterdodge(), stat = "summary", fun.data="mean_se") +
@@ -343,7 +380,30 @@ ggsave("Bacterial_Diversity.pdf", device = "pdf", width = 12, height = 10, units
 # bacterial diversity linear model
 b_diversity_lm<-lm(Shannon.16S.rar ~ SiteInvasion * Cover, data = b_metadata)
 anova(b_diversity_lm)
+library(performance)
 r2(b_diversity_lm)
+
+# Bacterial diversity plot without rarefaction
+library(ggplot2) #for ggplot function
+library(ggh4x) #for nested facet
+ggplot(b_metadata, aes(x=Cover, y=Shannon.16S, color=Cover))+
+  geom_jitter(alpha=0.6, position=position_jitterdodge(jitter.width = 0.2))+
+  geom_pointrange(size=1, position=position_jitterdodge(), stat = "summary", fun.data="mean_se") +
+  xlab(NULL) +
+  ylab("Bacterial/archaeal diversity") +
+  scale_color_manual(values=colors_cover)+
+  facet_nested(~ SiteInvasion + CoverGeneral, scales = "free_x")+
+  theme_classic(base_size = 14)+
+  theme(legend.position="none")+
+  theme(axis.text.x = element_text(angle = 60, hjust=1))
+
+# Save plot as a pdf
+ggsave("Bacterial_Diversity_NoRar.pdf", device = "pdf", width = 12, height = 10, units = "in")
+
+# bacterial diversity without rarefaction linear model
+b_diversity_norar_lm<-lm(Shannon.16S ~ SiteInvasion * Cover, data = b_metadata)
+anova(b_diversity_norar_lm)
+r2(b_diversity_norar_lm)
 
 # ITS
 
@@ -362,6 +422,7 @@ colors_cover<-c("Open_Bare"="burlywood", "Open_withNatives"="chocolate1", "Open_
                 "PaloVerde_noBuffel"="chartreuse2", "PaloVerde_withBuffel"="chartreuse4")
 
 # Fungal richness plot
+library(ggplot2) #for ggplot function
 library(ggh4x) #for nested facet
 ggplot(f_metadata, aes(x=Cover, y=Richness.ITS.rar, color=Cover))+
   geom_jitter(alpha=0.6, position=position_jitterdodge(jitter.width = 0.2))+
@@ -387,6 +448,8 @@ library(modelbased) # for estimate_contrast fucntion
 estimate_contrasts(f_richness_lm, contrast = "SiteInvasion:Cover", p_adjust = "none")
 
 # Fungal diversity plot
+library(ggplot2) #for ggplot function
+library(ggh4x) #for nested facet
 ggplot(f_metadata, aes(x=Cover, y=Shannon.ITS.rar, color=Cover))+
   geom_jitter(alpha=0.6, position=position_jitterdodge(jitter.width = 0.2))+
   geom_pointrange(size=1, position=position_jitterdodge(), stat = "summary", fun.data="mean_se") +
@@ -405,6 +468,29 @@ ggsave("Fungal_diversity.pdf", device = "pdf",  width = 12, height = 10, units =
 f_diversity_lm<-lm(Shannon.ITS.rar ~ SiteInvasion * Cover, data = f_metadata)
 anova(f_diversity_lm)
 r2(f_diversity_lm)
+
+# Fungal diversity plot without rarefaction
+library(ggplot2) #for ggplot function
+library(ggh4x) #for nested facet
+ggplot(f_metadata, aes(x=Cover, y=Shannon.ITS, color=Cover))+
+  geom_jitter(alpha=0.6, position=position_jitterdodge(jitter.width = 0.2))+
+  geom_pointrange(size=1, position=position_jitterdodge(), stat = "summary", fun.data="mean_se") +
+  xlab(NULL) +
+  ylab("Fungal diversity") +
+  scale_color_manual(values=colors_cover)+
+  facet_nested(~ SiteInvasion + CoverGeneral, scales = "free_x")+
+  theme_classic(base_size = 14)+
+  theme(legend.position="none")+
+  theme(axis.text.x = element_text(angle = 60, hjust=1))
+
+# Save plot as a pdf
+ggsave("Fungal_diversity_NoRar.pdf", device = "pdf",  width = 12, height = 10, units = "in")
+
+# Fungal diversity without rarefaction linear model
+f_diversity_norar_lm<-lm(Shannon.ITS ~ SiteInvasion * Cover, data = f_metadata)
+anova(f_diversity_norar_lm)
+library(performance)
+r2(f_diversity_norar_lm)
 
 # COMPOSITION SIMILARITY NMDS PLOTS
 
