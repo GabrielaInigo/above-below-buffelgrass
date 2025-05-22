@@ -21,4 +21,7 @@ The repository is organized into three main directories:
 
 3. `buffelgrass_soilmicrobiome/`
    - Contains soil microbial community data and analysis scripts
+  
+## DADA2 tutorial
+https://benjjneb.github.io/dada2/tutorial.html
    
