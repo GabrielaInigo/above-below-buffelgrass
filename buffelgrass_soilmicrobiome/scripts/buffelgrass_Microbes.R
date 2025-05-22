@@ -198,7 +198,8 @@ sum(rowSums(b.dat.agr.sorted[2])) # 9778504
 
 sum(b_proportions[2,]) # Must be 100%
 
-# Taxonomic omposition barplot
+
+# Taxonomic composition barplot
 
 # create phyloseq object
 otu_b <- otu_table(as.matrix(fil_b_asv), taxa_are_rows = FALSE)
@@ -222,15 +223,103 @@ plot_bar(b_physeq_phylum_rel, fill = "Phylum") +
 # create a dataframe 
 df_bac <- psmelt(b_physeq_phylum_rel)
 
-# group less abundant phyla into a group called 'Others' (top 10)
+
+# group less abundant phyla into a group called 'Others' (top 6)
+library(dplyr)
 top_n <- 6
 phylum_sums <- df_bac %>% group_by(Phylum) %>% summarise(total = sum(Abundance)) %>% arrange(desc(total))
 top_phyla <- phylum_sums$Phylum[1:top_n]
-df_bac$Phylum_grouped <- ifelse(df_bac$Phylum %in% top_phyla, as.character(df_bac$Phylum), 'Others')
+df_bac$Phylum_grouped <- ifelse(df_bac$Phylum %in% top_phyla, as.character(df_bac$Phylum), 'Other')
 
-# Recalcular abundancia agrupada
-df_bac_grouped <- df_bac %>% group_by(Sample, get(group_var), Phylum_grouped) %>% summarise(Abundance = sum(Abundance))
-colnames(df_bac_grouped)[2] <- group_var
+# plot the grouped barplot
+library(ggplot2)
+ggplot(df_bac, aes(x = Sample, y = Abundance, fill = Phylum_grouped)) +
+  geom_bar(stat = "identity") +
+  ylab("Relative Abundance") +
+  xlab("Sample") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# save plot as a pdf
+ggsave("BacterialTaxonomicCompositionPerSample.pdf", device = "pdf", width = 12, height = 10, units = "in")
+
+# make a plot with the samples ordered as the other plots
+# organize the samples by sampleid to match the order of the other plots
+custom_order_b <- c("IOD1", "IOD2", "IOD3", "IOD4", "IOD5",
+                  "ION1", "ION2", "ION3", "ION4", "ION5",
+                  "IOB1", "IOB2", "IOB3", "IOB4", "IOB5",
+                  "IM1", "IM2", "IM3", "IM4", "IM5",
+                  "IPF1", "IPF2", "IPF3", "IPF4", "IPF5",
+                  "IPV1", "IPV2", "IPV3", "IPV4", "IPV5",
+                  "NOD1", "NOD2", "NOD3", "NOD4", "NOD5",
+                  "NON1", "NON2", "NON3", "NON4", "NON5",
+                  "COB1", "COB2", "COB3", "COB4", "COB5",
+                  "NM1", "NM2", "NM3", "NM4", "NM5",
+                  "CM1", "CM3", "CM4", "CM5",
+                  "NPF1", "NPF2", "NPF3", "NPF4", "NPF5",
+                  "CPF1", "CPF2", "CPF3", "CPF4", "CPF5",
+                  "NPV1", "NPV2", "NPV3", "NPV4", "NPV5",
+                  "CPV1", "CPV2", "CPV3", "CPV4", "CPV5")
+
+# convert to factor
+df_bac$Sample <- factor(df_bac$Sample, levels = custom_order_b)
+
+# order the data
+df_bac_sorted <- df_bac[order(df_bac$Sample), ]
+
+# group less abundant phyla into a group called 'Others' (top 6)
+library(dplyr)
+top_n <- 6
+phylum_sums <- df_bac_sorted %>% group_by(Phylum) %>% summarise(total = sum(Abundance)) %>% arrange(desc(total))
+top_phyla <- phylum_sums$Phylum[1:top_n]
+df_bac_sorted$Phylum_grouped <- ifelse(df_bac_sorted$Phylum %in% top_phyla, as.character(df_bac_sorted$Phylum), 'Other')
+
+# plot the grouped barplot
+library(ggplot2)
+ggplot(df_bac_sorted, aes(x = Sample, y = Abundance, fill = Phylum_grouped)) +
+  geom_bar(stat = "identity") +
+  ylab("Relative Abundance") +
+  xlab("Sample") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# save plot as a pdf
+ggsave("BacterialTaxonomicCompositionPerSampleSorted.pdf", device = "pdf", width = 12, height = 10, units = "in")
+
+
+
+
+# group samples per Cover at each Site by calculating the mean relative abundance
+
+# transform to relative abundance
+b_physeq_phylum_rel <- transform_sample_counts(b_physeq_phylum, function(x) x / sum(x))
+
+# create a dataframe 
+df_bac <- psmelt(b_physeq_phylum_rel)
+
+# group less abundant phyla into a group called 'Others' (top 6)
+library(dplyr)
+top_n <- 6
+phylum_sums <- df_bac %>% group_by(Phylum) %>% summarise(total = sum(Abundance)) %>% arrange(desc(total))
+top_phyla <- phylum_sums$Phylum[1:top_n]
+df_bac$Phylum_grouped <- ifelse(df_bac$Phylum %in% top_phyla, as.character(df_bac$Phylum), 'Other')
+
+# calculate the mean relative abundance per cover x site x phylum
+df_summary <- df_bac %>%
+  group_by(SiteInvasion, Cover, Phylum_grouped) %>%
+  summarise(MeanAbundance = mean(Abundance), .groups = "drop")
+
+# plot 
+ggplot(df_summary, aes(x = Cover, y = MeanAbundance, fill = Phylum_grouped)) +
+  geom_bar(stat = "identity", position = "stack") +
+  facet_wrap(~ SiteInvasion) +
+  theme_minimal() +
+  ylab("Mean Relative Abundance") +
+  xlab("Cover") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# save plot as a pdf
+ggsave("BacterialTaxonomicCompositionPerCover.pdf", device = "pdf", width = 12, height = 10, units = "in")
 
 
 # ITS
@@ -268,6 +357,99 @@ f_proportions <- apply(f.dat.agr.sorted, 1, function(x){as.numeric(x)*100/sum(ro
 sum(rowSums(f.dat.agr.sorted[2])) # 5092591
 
 sum(f_proportions[2,]) # Must be 100
+
+
+# Taxonomic composition barplot
+
+# create phyloseq object
+otu_f <- otu_table(as.matrix(fil_f_asv), taxa_are_rows = FALSE)
+tax_f <- tax_table(as.matrix(fil_f_taxa))
+sample_f <- sample_data(f_metadata)
+f_physeq <- phyloseq(otu_f, tax_f, sample_f)
+
+# agglomerate taxa
+f_physeq_phylum <- tax_glom(f_physeq, taxrank = "Phylum")
+
+# transform to relative abundance
+f_physeq_phylum_rel <- transform_sample_counts(f_physeq_phylum, function(x) x / sum(x))
+
+# plot taxonomic composition per sample
+library(ggplot2)
+plot_bar(f_physeq_phylum_rel, fill = "Phylum") +
+  ylab("Relative Abundance") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# create a dataframe 
+df_fung <- psmelt(f_physeq_phylum_rel)
+
+# group less abundant phyla into a group called 'Others' (top 6)
+library(dplyr)
+top_n_fung <- 6
+phylum_sums <- df_fung %>% group_by(Phylum) %>% summarise(total = sum(Abundance)) %>% arrange(desc(total))
+top_phyla <- phylum_sums$Phylum[1:top_n_fung]
+df_fung$Phylum_grouped <- ifelse(df_fung$Phylum %in% top_phyla, as.character(df_fung$Phylum), 'Other')
+
+# plot the grouped barplot
+library(ggplot2)
+ggplot(df_fung, aes(x = Sample, y = Abundance, fill = Phylum_grouped)) +
+  geom_bar(stat = "identity") +
+  ylab("Relative Abundance") +
+  xlab("Sample") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# save plot as a pdf
+ggsave("FungalTaxonomicCompositionPerSample.pdf", device = "pdf", width = 12, height = 10, units = "in")
+
+
+# make a plot with the samples ordered as the other plots
+# organize the samples by sampleid to match the order of the other plots
+custom_order_f <- c("IOD1", "IOD2", "IOD3", "IOD4", "IOD5",
+                  "ION1", "ION2", "ION3", "ION4", "ION5",
+                  "IOB1", "IOB2", "IOB3", "IOB4",
+                  "IM1", "IM2", "IM3", "IM4", "IM5",
+                  "IPF1", "IPF2", "IPF3", "IPF4", "IPF5",
+                  "IPV1", "IPV2", "IPV3", "IPV4", "IPV5",
+                  "NOD1", "NOD2", "NOD3", "NOD4", "NOD5",
+                  "NON1", "NON2", "NON3", "NON4", "NON5",
+                  "COB1", "COB2", "COB3", "COB4", "COB5",
+                  "NM1", "NM2", "NM3", "NM4", "NM5",
+                  "CM1", "CM2", "CM3", "CM4", "CM5",
+                  "NPF1", "NPF2", "NPF3", "NPF4", "NPF5",
+                  "CPF1", "CPF2", "CPF3", "CPF4", "CPF5",
+                  "NPV1", "NPV2", "NPV3", "NPV4", "NPV5",
+                  "CPV1", "CPV2", "CPV3", "CPV4", "CPV5")
+
+# convert to factor
+df_fung$Sample <- factor(df_fung$Sample, levels = custom_order_f)
+
+# order the data
+df_fung_sorted <- df_fung[order(df_fung$Sample), ]
+
+
+
+# group less abundant phyla into a group called 'Others' (top 6)
+library(dplyr)
+top_n_fung <- 6
+phylum_sums <- df_fung_sorted %>% group_by(Phylum) %>% summarise(total = sum(Abundance)) %>% arrange(desc(total))
+top_phyla <- phylum_sums$Phylum[1:top_n_fung]
+df_fung_sorted$Phylum_grouped <- ifelse(df_fung_sorted$Phylum %in% top_phyla, as.character(df_fung_sorted$Phylum), 'Other')
+
+# plot the grouped barplot
+library(ggplot2)
+ggplot(df_fung_sorted, aes(x = Sample, y = Abundance, fill = Phylum_grouped)) +
+  geom_bar(stat = "identity") +
+  ylab("Relative Abundance") +
+  xlab("Sample") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# save plot as a pdf
+ggsave("FungalTaxonomicCompositionPerSampleSorted.pdf", device = "pdf", width = 12, height = 10, units = "in")
+
+
+
 
 # ALPHA DIVERSITY
 
